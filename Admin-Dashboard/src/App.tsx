@@ -50,7 +50,6 @@ import { Home, Login, Register, ForgotPassword } from "./pages";
 function App() {
   return (
     <BrowserRouter>
-      <GitHubBanner />
       <RefineKbarProvider>
         <AntdApp>
           <DevtoolsProvider>
@@ -150,7 +149,6 @@ function App() {
               <UnsavedChangesNotifier />
               <DocumentTitleHandler />
             </Refine>
-            <DevtoolsPanel />
           </DevtoolsProvider>
         </AntdApp>
       </RefineKbarProvider>
