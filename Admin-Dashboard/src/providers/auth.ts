@@ -2,24 +2,23 @@ import { AuthProvider } from "@refinedev/core";
 import { API_URL, dataProvider } from "./data";
 
 export const authCredentials = {
-  email: "admin@refine.dev",
-  password: "admin",
+  email: "michael.scott@dundermifflin.com",
+  password: "demodemo",
 };
 
 export const authProvider: AuthProvider = {
-  login: async ({ email, password }) => {
+  login: async ({ email }) => {
     try {
       const { data } = await dataProvider.custom({
         url: API_URL,
         method: "post",
         headers: {},
         meta: {
-          variables: { email, password },
+          variables: { email },
           rawQuery: `
-            mutation Login($email: String!, $password: String!) {
+            mutation Login($email: String!) {
               login(loginInput: {
                 email: $email
-                password: $password
               }) {
                 accessToken
               }

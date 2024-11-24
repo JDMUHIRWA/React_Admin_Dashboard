@@ -1,60 +1,60 @@
 import { GraphQLFormattedError } from "graphql";
 
 type Error = {
-    message: string;
-    statusCode: string;
-}
-
-const customFetch = async (url: string, options: RequestInit) => {
-    const accessToken = localStorage.getItem("access_Token");
-
-    const headers = options.headers as Record<string, string>;
-
-    return await fetch(url, {
-        ...options,
-        headers: {
-            ...headers,
-            Authorization: headers?.Authorization || `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-            "Apollo-Require-Preflight": "true",
-        },
-    });
+  message: string;
+  statusCode: string;
 };
 
-const getGraphQLErrors = (body: Record<"errors", GraphQLFormattedError[]> | undefined):
-Error |  null => {
-    if (!body) {
-        return {
-            message: "An unknown error occurred",
-            statusCode: "INTERNAL_SERVER_ERROR",
-        }
-    }
+const customFetch = async (url: string, options: RequestInit) => {
+  const accessToken = localStorage.getItem("access_Token");
 
-    if ("errors" in body) {
-        const errors = body?.errors;
+  const headers = options.headers as Record<string, string>;
 
-        const messages = errors?.map((error) => error?.message)?.join("");
-        const code = errors?.[0]?.extensions?.code;
+  return await fetch(url, {
+    ...options,
+    headers: {
+      ...headers,
+      Authorization: headers?.Authorization || `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+      "Apollo-Require-Preflight": "true",
+    },
+  });
+};
 
-        return {
-            message: messages || JSON.stringify(errors),
-            statusCode: code || 500,
-        }
-    }
-}
+const getGraphQLErrors = (
+  body: Record<"errors", GraphQLFormattedError[]> | undefined
+): Error | null => {
+  if (!body) {
+    return {
+      message: "An unknown error occurred",
+      statusCode: "INTERNAL_SERVER_ERROR",
+    };
+  }
 
-export const fetchWrapper = async(url: string, options: RequestInit) => {
-    const response = await customFetch(url, options);
+  if ("errors" in body) {
+    const errors = body?.errors;
 
-    const responseClone = response.clone();
-    const body = await responseClone.json();
+    const messages = errors?.map((error) => error?.message)?.join("");
+    const code = errors?.[0]?.extensions?.code;
 
-    const error= getGraphQLErrors(body);
+    return {
+      message: messages || JSON.stringify(errors),
+      statusCode: code || 500,
+    };
+  }
+};
 
-    if(error) {
-        throw error;
-    }
-    
-    return response;
-    
-}
+export const fetchWrapper = async (url: string, options: RequestInit) => {
+  const response = await customFetch(url, options);
+
+  const responseClone = response.clone();
+  const body = await responseClone.json();
+
+  const error = getGraphQLErrors(body);
+
+  if (error) {
+    throw error;
+  }
+
+  return response;
+};

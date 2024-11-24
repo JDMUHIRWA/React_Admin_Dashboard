@@ -4,6 +4,7 @@ import graphqlDataProvider, {
 } from "@refinedev/nestjs-query";
 
 import { createClient } from "graphql-ws";
+import { fetchWrapper } from "./fetchWrapper";
 
 export const API_BASE_URL = "https://api.crm.refine.dev";
 export const API_URL = `${API_BASE_URL}/graphql`;
